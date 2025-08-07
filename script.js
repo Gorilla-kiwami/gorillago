@@ -27,18 +27,7 @@ const hiraList = [
   "ゃ","ゅ","ょ"
 ];
 
-// ゴリラ記号 → 数値（ビット和）
-function codeToNumber(code) {
-  let sum = 0;
-  for (let char of code) {
-    if (mapping[char]) {
-      sum += mapping[char];
-    }
-  }
-  return sum;
-}
-
-// 数値 → ゴリラ記号（逆変換用）
+// 数値→ゴリラ記号
 function numberToCode(n) {
   let result = "";
   const values = [64, 32, 16, 8, 4, 2, 1];
@@ -52,20 +41,50 @@ function numberToCode(n) {
   return result;
 }
 
-// 入力からゴリラ文字を見つけて変換
-function convert() {
-  const input = document.getElementById("input").value.trim();
+// ゴリラ記号→数値
+function codeToNumber(code) {
+  let sum = 0;
+  for (let char of code) {
+    if (mapping[char]) {
+      sum += mapping[char];
+    } else {
+      return -1; // 不正な文字
+    }
+  }
+  return sum;
+}
 
-  // スペースで分割（1音ずつ）
-  const tokens = input.split(" ");
-  const output = tokens.map(token => {
-    const value = codeToNumber(token);
+// ひらがな→ゴリラ語（カンマ区切り）
+function convertToGorilla() {
+  const input = document.getElementById("input").value.trim();
+  if (!input) {
+    document.getElementById("output").textContent = "ひらがなを入力してください";
+    return;
+  }
+  const chars = [...input];
+  const codes = chars.map(char => {
+    const index = hiraList.indexOf(char);
+    if (index === -1) return "[?]";
+    return numberToCode(index + 1);
+  });
+  document.getElementById("output").textContent = codes.join(",");
+}
+
+// ゴリラ語→ひらがな（カンマ区切り）
+function convertBack() {
+  const input = document.getElementById("input").value.trim();
+  if (!input) {
+    document.getElementById("output").textContent = "ゴリラ語を入力してください";
+    return;
+  }
+  const parts = input.split(",");
+  const decoded = parts.map(code => {
+    const value = codeToNumber(code);
     if (value >= 1 && value <= hiraList.length) {
       return hiraList[value - 1];
     } else {
       return "[?]";
     }
   });
-
-  document.getElementById("output").textContent = output.join("");
+  document.getElementById("output").textContent = decoded.join("");
 }
