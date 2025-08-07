@@ -3,11 +3,35 @@ body {
   background: #f0f0f0;
   text-align: center;
   padding: 40px;
+  position: relative;
+  overflow-x: hidden;
 }
 
 h1 {
   font-size: 32px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+/* 背景に薄い大量のゴリラ絵文字 */
+body::before {
+  content: "🦍🦍🦍🦍🦍🦍🦍🦍🦍🦍🦍🦍🦍🦍🦍🦍🦍🦍🦍🦍🦍🦍🦍🦍";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  font-size: 100px;
+  opacity: 0.05;
+  pointer-events: none;
+  user-select: none;
+  display: flex;
+  flex-wrap: wrap;
+  z-index: 0;
+  line-height: 0.6;
+  justify-content: center;
+  align-content: center;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 textarea {
@@ -15,16 +39,22 @@ textarea {
   padding: 10px;
   font-size: 18px;
   margin-bottom: 10px;
+  resize: vertical;
+  position: relative;
+  z-index: 1;
 }
 
 button {
   padding: 10px 20px;
   font-size: 18px;
-  background: #4CAF50;
+  background: #4caf50;
   color: white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
+  margin-bottom: 30px;
+  position: relative;
+  z-index: 1;
 }
 
 button:hover {
@@ -39,4 +69,8 @@ button:hover {
   border-radius: 10px;
   display: inline-block;
   min-width: 60%;
+  white-space: pre-wrap;
+  word-break: break-word;
+  position: relative;
+  z-index: 1;
 }
