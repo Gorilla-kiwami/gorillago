@@ -1,70 +1,102 @@
-const charMap = {
-  'ぁ': 1, 'あ': 2, 'ぃ': 3, 'い': 4, 'ぅ': 5, 'う': 6, 'ぇ': 7, 'え': 8, 'ぉ': 9, 'お': 10,
-  'か': 11, 'が': 12, 'き': 13, 'ぎ': 14, 'く': 15, 'ぐ': 16, 'け': 17, 'げ': 18, 'こ': 19, 'ご': 20,
-  'さ': 21, 'ざ': 22, 'し': 23, 'じ': 24, 'す': 25, 'ず': 26, 'せ': 27, 'ぜ': 28, 'そ': 29, 'ぞ': 30,
-  'た': 31, 'だ': 32, 'ち': 33, 'ぢ': 34, 'っ': 35, 'つ': 36, 'づ': 37, 'て': 38, 'で': 39, 'と': 40, 'ど': 41,
-  'な': 42, 'に': 43, 'ぬ': 44, 'ね': 45, 'の': 46,
-  'は': 47, 'ば': 48, 'ぱ': 49, 'ひ': 50, 'び': 51, 'ぴ': 52, 'ふ': 53, 'ぶ': 54, 'ぷ': 55,
-  'へ': 56, 'べ': 57, 'ぺ': 58, 'ほ': 59, 'ぼ': 60, 'ぽ': 61,
-  'ま': 62, 'み': 63, 'む': 64, 'め': 65, 'も': 66,
-  'や': 67, 'ゃ': 68, 'ゆ': 69, 'ゅ': 70, 'よ': 71, 'ょ': 72,
-  'ら': 73, 'り': 74, 'る': 75, 'れ': 76, 'ろ': 77,
-  'わ': 78, 'ゎ': 79, 'を': 80, 'ん': 81
+const gorillaMap = {
+  1: "ウ",
+  2: "ホ",
+  4: "ゴ",
+  8: "リ",
+  16: "ラ",
+  32: "ッ",
+  64: "🦍"
 };
 
-const reverseMap = Object.fromEntries(Object.entries(charMap).map(([k, v]) => [v, k]));
+const gorillaMapReverse = Object.fromEntries(
+  Object.entries(gorillaMap).map(([k, v]) => [v, Number(k)])
+);
 
-const bitMap = {
-  1: "ウ", 2: "ホ", 4: "ゴ", 8: "リ", 16: "ラ", 32: "ッ", 64: "🦍"
-};
+// Unicodeのコードポイントを7bitごとに分割し、ビットごとにゴリラ文字に変換
+function encodeCharToGorilla(char) {
+  const code = char.charCodeAt(0);
+  const blocks = [];
+  let remaining = code;
 
-function toGorilla(n) {
-  let result = '';
-  const keys = Object.keys(bitMap).map(Number).sort((a, b) => b - a);
-  for (let key of keys) {
-    if (n >= key) {
-      result += bitMap[key];
-      n -= key;
-    }
+  // 7bitずつ下位から上位に分割
+  while (remaining > 0) {
+    blocks.push(remaining & 0x7f); // 7bitマスク
+    remaining >>= 7;
   }
-  return result;
+  if (blocks.length === 0) blocks.push(0);
+
+  // 各ブロックをゴリラ語(ウホゴリラッ🦍)に変換
+  const encodedBlocks = blocks.map((block) => {
+    let res = "";
+    for (const bit of [64, 32, 16, 8, 4, 2, 1]) {
+      if (block & bit) {
+        res += gorillaMap[bit];
+      }
+    }
+    return res;
+  });
+
+  // 「下位→上位」の順にカンマ区切りで返す
+  return encodedBlocks.join(",");
 }
 
-function fromGorilla(g) {
-  let sum = 0;
-  for (let i = 0; i < g.length; i++) {
-    let char = g[i];
-    for (let [k, v] of Object.entries(bitMap)) {
-      if (v === char) sum += parseInt(k);
+// ゴリラ語の塊(例: ウホゴ)を数値に戻す
+function decodeGorillaBlock(block) {
+  let val = 0;
+  for (const ch of block) {
+    if (gorillaMapReverse[ch]) {
+      val += gorillaMapReverse[ch];
     }
   }
-  return sum;
+  return val;
 }
 
+// ゴリラ語の文字列(カンマ区切り複数塊)をUnicodeコードポイントに復元
+function decodeGorillaToChar(gorillaStr) {
+  const blocks = gorillaStr.split(",");
+  let code = 0;
+  // 下位→上位なので上位は左シフト
+  for (let i = blocks.length - 1; i >= 0; i--) {
+    code <<= 7;
+    code += decodeGorillaBlock(blocks[i]);
+  }
+  return String.fromCharCode(code);
+}
+
+// 入力された日本語をゴリラ語に変換（連結はカンマで区切る）
 function convert() {
-  const input = document.getElementById("input").value;
+  const input = document.getElementById("input").value.trim();
   const output = [];
 
-  for (let char of input) {
-    const num = charMap[char];
-    if (!num) {
-      output.push("[?]");
+  for (const ch of input) {
+    if (ch === " " || ch === "\n") {
+      output.push(ch);
       continue;
     }
-    output.push(toGorilla(num));
+    output.push(encodeCharToGorilla(ch));
   }
 
-  document.getElementById("output").innerText = output.join(",");
+  document.getElementById("output").innerText = output.join(" ");
 }
 
+// ゴリラ語（カンマ区切りの塊がスペース区切りで複数）を日本語に戻す
 function convertBack() {
-  const input = document.getElementById("input").value;
-  const parts = input.split(",");
+  const input = document.getElementById("input").value.trim();
+  const parts = input.split(/\s+/);
   const output = [];
 
-  for (let part of parts) {
-    const num = fromGorilla(part);
-    output.push(reverseMap[num] || "[?]");
+  for (const part of parts) {
+    if (!part) continue;
+    // 空白はそのまま
+    if (/^[\s\r\n]+$/.test(part)) {
+      output.push(part);
+      continue;
+    }
+    try {
+      output.push(decodeGorillaToChar(part));
+    } catch {
+      output.push("[?]");
+    }
   }
 
   document.getElementById("output").innerText = output.join("");
