@@ -2,24 +2,21 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ゴリラ語 ⇄ ひらがな 変換サイト</title>
+  <title>ゴリラ語変換器</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>ゴリラ語 ⇄ ひらがな 変換サイト</h1>
-  <textarea id="input" rows="5" placeholder="ひらがなを入力、またはゴリラ語（カンマ区切り）を入力"></textarea>
-  <br />
-  <button onclick="convert()">ひらがな → ゴリラ語</button>
-  <button onclick="convertBack()">ゴリラ語 → ひらがな</button>
-  <div id="output" class="output"></div>
-
-  <!-- 背景用のゴリラ絵文字を固定divで表示 -->
-  <div class="background-gorilla">
-    🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍
-    🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍
-    🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍
+  <div class="background">
+    <div class="gorilla-stream"></div>
   </div>
+
+  <h1>ゴリラ語変換サイト</h1>
+
+  <textarea id="input" placeholder="日本語を入力"></textarea><br />
+  <button onclick="convert()">ゴリラ語に変換</button>
+  <button onclick="convertBack()">日本語に戻す</button>
+
+  <div class="output" id="output"></div>
 
   <script src="script.js"></script>
 </body>
