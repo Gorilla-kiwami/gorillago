@@ -3,7 +3,6 @@ body {
   background: #f0f0f0;
   text-align: center;
   padding: 40px;
-  /* 斜め薄くゴリラ語の文字を背景に */
   background-image:
     linear-gradient(45deg, rgba(0,0,0,0.05) 25%, transparent 25%),
     linear-gradient(-45deg, rgba(0,0,0,0.05) 25%, transparent 25%);
