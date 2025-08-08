@@ -3,20 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ゴリラ語変換サイト</title>
+  <title>ゴリラ語 ⇄ ひらがな 変換サイト</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <h1>ゴリラ語 ⇄ ひらがな 変換サイト</h1>
-  
-  <textarea id="input" rows="4" placeholder="ひらがなかゴリラ語（カンマ区切り）を入力"></textarea>
+  <textarea id="input" rows="5" placeholder="ひらがなを入力、またはゴリラ語（カンマ区切り）を入力"></textarea>
   <br />
-  
-  <button onclick="convertToGorilla()">ひらがな → ゴリラ語</button>
+  <button onclick="convert()">ひらがな → ゴリラ語</button>
   <button onclick="convertBack()">ゴリラ語 → ひらがな</button>
-  
-  <div class="output" id="output"></div>
-  
+  <div id="output" class="output"></div>
+
   <script src="script.js"></script>
 </body>
 </html>
