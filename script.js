@@ -60,16 +60,18 @@ function convert() {
     if (!num) {
       output.push("[?]");
     } else {
+      // ひらがな1文字→ゴリラ語塊（文字列）
       output.push(decimalToGorilla(num));
     }
   }
 
+  // ひらがな1文字ごとのゴリラ語塊をカンマ区切りで繋ぐ
   document.getElementById("output").innerText = output.join(",");
 }
 
 function convertBack() {
   const input = document.getElementById("input").value.trim();
-  // 入力をカンマで区切って1文字分ずつ処理
+  // 入力を「,」で区切って1文字分ずつ復号
   const parts = input.split(",");
   let result = "";
 
