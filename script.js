@@ -1,85 +1,71 @@
-const gorillaToBit = {
-  "ウ": 1,
-  "ホ": 2,
-  "ゴ": 4,
-  "リ": 8,
-  "ラ": 16,
-  "ッ": 32,
-  "🦍": 64
+const charMap = {
+  'ぁ': 1, 'あ': 2, 'ぃ': 3, 'い': 4, 'ぅ': 5, 'う': 6, 'ぇ': 7, 'え': 8, 'ぉ': 9, 'お': 10,
+  'か': 11, 'が': 12, 'き': 13, 'ぎ': 14, 'く': 15, 'ぐ': 16, 'け': 17, 'げ': 18, 'こ': 19, 'ご': 20,
+  'さ': 21, 'ざ': 22, 'し': 23, 'じ': 24, 'す': 25, 'ず': 26, 'せ': 27, 'ぜ': 28, 'そ': 29, 'ぞ': 30,
+  'た': 31, 'だ': 32, 'ち': 33, 'ぢ': 34, 'っ': 35, 'つ': 36, 'づ': 37, 'て': 38, 'で': 39, 'と': 40, 'ど': 41,
+  'な': 42, 'に': 43, 'ぬ': 44, 'ね': 45, 'の': 46,
+  'は': 47, 'ば': 48, 'ぱ': 49, 'ひ': 50, 'び': 51, 'ぴ': 52, 'ふ': 53, 'ぶ': 54, 'ぷ': 55,
+  'へ': 56, 'べ': 57, 'ぺ': 58, 'ほ': 59, 'ぼ': 60, 'ぽ': 61,
+  'ま': 62, 'み': 63, 'む': 64, 'め': 65, 'も': 66,
+  'や': 67, 'ゃ': 68, 'ゆ': 69, 'ゅ': 70, 'よ': 71, 'ょ': 72,
+  'ら': 73, 'り': 74, 'る': 75, 'れ': 76, 'ろ': 77,
+  'わ': 78, 'ゎ': 79, 'を': 80, 'ん': 81
 };
 
-const numToChar = {
-  1: "ぁ", 2: "あ", 3: "ぃ", 4: "い", 5: "ぅ", 6: "う", 7: "ぇ", 8: "え", 9: "ぉ", 10: "お",
-  11: "か", 12: "き", 13: "く", 14: "け", 15: "こ",
-  16: "さ", 17: "し", 18: "す", 19: "せ", 20: "そ",
-  21: "た", 22: "ち", 23: "つ", 24: "て", 25: "と",
-  26: "な", 27: "に", 28: "ぬ", 29: "ね", 30: "の",
-  31: "は", 32: "ひ", 33: "ふ", 34: "へ", 35: "ほ",
-  36: "ま", 37: "み", 38: "む", 39: "め", 40: "も",
-  41: "ゃ", 42: "や", 43: "ゅ", 44: "ゆ", 45: "ょ", 46: "よ",
-  47: "ら", 48: "り", 49: "る", 50: "れ", 51: "ろ",
-  52: "わ", 53: "を", 54: "ん", 55: "っ", 56: "ー",
-  57: "が", 58: "ぎ", 59: "ぐ", 60: "げ", 61: "ご",
-  62: "ざ", 63: "じ", 64: "ず", 65: "ぜ", 66: "ぞ",
-  67: "だ", 68: "ぢ", 69: "づ", 70: "で", 71: "ど"
+const reverseMap = Object.fromEntries(Object.entries(charMap).map(([k, v]) => [v, k]));
+
+const bitMap = {
+  1: "ウ", 2: "ホ", 4: "ゴ", 8: "リ", 16: "ラ", 32: "ッ", 64: "🦍"
 };
 
-const charToNum = {};
-for (const key in numToChar) {
-  charToNum[numToChar[key]] = parseInt(key);
-}
-
-function decimalToGorilla(num) {
-  const bits = [64, 32, 16, 8, 4, 2, 1];
-  let result = "";
-  for (const bit of bits) {
-    if (num >= bit) {
-      result += Object.keys(gorillaToBit).find(k => gorillaToBit[k] === bit);
-      num -= bit;
+function toGorilla(n) {
+  let result = '';
+  const keys = Object.keys(bitMap).map(Number).sort((a, b) => b - a);
+  for (let key of keys) {
+    if (n >= key) {
+      result += bitMap[key];
+      n -= key;
     }
   }
   return result;
 }
 
-function gorillaToDecimal(goriStr) {
+function fromGorilla(g) {
   let sum = 0;
-  for (const char of goriStr) {
-    if (gorillaToBit[char]) {
-      sum += gorillaToBit[char];
+  for (let i = 0; i < g.length; i++) {
+    let char = g[i];
+    for (let [k, v] of Object.entries(bitMap)) {
+      if (v === char) sum += parseInt(k);
     }
   }
   return sum;
 }
 
 function convert() {
-  const input = document.getElementById("input").value.trim();
-  let output = [];
+  const input = document.getElementById("input").value;
+  const output = [];
 
-  for (const char of input) {
-    const num = charToNum[char];
+  for (let char of input) {
+    const num = charMap[char];
     if (!num) {
       output.push("[?]");
-    } else {
-      output.push(decimalToGorilla(num));
+      continue;
     }
+    output.push(toGorilla(num));
   }
 
   document.getElementById("output").innerText = output.join(",");
 }
 
 function convertBack() {
-  const input = document.getElementById("input").value.trim();
+  const input = document.getElementById("input").value;
   const parts = input.split(",");
-  let result = "";
+  const output = [];
 
-  for (const part of parts) {
-    const dec = gorillaToDecimal(part);
-    if (numToChar[dec]) {
-      result += numToChar[dec];
-    } else {
-      result += "[?]";
-    }
+  for (let part of parts) {
+    const num = fromGorilla(part);
+    output.push(reverseMap[num] || "[?]");
   }
 
-  document.getElementById("output").innerText = result;
+  document.getElementById("output").innerText = output.join("");
 }
