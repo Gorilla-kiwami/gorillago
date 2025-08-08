@@ -24,8 +24,17 @@ const hiraList = [
   "だ","ぢ","づ","で","ど",
   "ば","び","ぶ","べ","ぼ",
   "ぱ","ぴ","ぷ","ぺ","ぽ",
-  "ゃ","ゅ","ょ"
+  "ゃ","ゅ","ょ",
+  "ぁ","ぃ","ぅ","ぇ","ぉ",
+  "ゎ"
 ];
+
+// カタカナ → ひらがな変換
+function kataToHira(str) {
+  return str.replace(/[\u30A1-\u30F6]/g, ch =>
+    String.fromCharCode(ch.charCodeAt(0) - 0x60)
+  );
+}
 
 // 数値→ゴリラ記号
 function numberToCode(n) {
@@ -54,13 +63,15 @@ function codeToNumber(code) {
   return sum;
 }
 
-// ひらがな→ゴリラ語（カンマ区切り）
+// ひらがな or カタカナ → ゴリラ語（カンマ区切り）
 function convertToGorilla() {
-  const input = document.getElementById("input").value.trim();
+  let input = document.getElementById("input").value.trim();
   if (!input) {
-    document.getElementById("output").textContent = "ひらがなを入力してください";
+    document.getElementById("output").textContent = "ひらがな or カタカナを入力してください";
     return;
   }
+  
+  input = kataToHira(input); // カタカナをひらがなに変換
   const chars = [...input];
   const codes = chars.map(char => {
     const index = hiraList.indexOf(char);
@@ -70,7 +81,7 @@ function convertToGorilla() {
   document.getElementById("output").textContent = codes.join(",");
 }
 
-// ゴリラ語→ひらがな（カンマ区切り）
+// ゴリラ語 → ひらがな（カンマ区切り）
 function convertBack() {
   const input = document.getElementById("input").value.trim();
   if (!input) {
