@@ -14,18 +14,16 @@ const gorillaMapReverse = Object.fromEntries(
 
 // Unicodeのコードポイントを7bitごとに分割し、ビットごとにゴリラ文字に変換
 function encodeCharToGorilla(char) {
-  const code = char.charCodeAt(0);
+  const code = char.codePointAt(0);
   const blocks = [];
   let remaining = code;
 
-  // 7bitずつ下位から上位に分割
   while (remaining > 0) {
     blocks.push(remaining & 0x7f); // 7bitマスク
     remaining >>= 7;
   }
   if (blocks.length === 0) blocks.push(0);
 
-  // 各ブロックをゴリラ語(ウホゴリラッ🦍)に変換
   const encodedBlocks = blocks.map((block) => {
     let res = "";
     for (const bit of [64, 32, 16, 8, 4, 2, 1]) {
@@ -36,7 +34,6 @@ function encodeCharToGorilla(char) {
     return res;
   });
 
-  // 「下位→上位」の順にカンマ区切りで返す
   return encodedBlocks.join(",");
 }
 
@@ -55,15 +52,13 @@ function decodeGorillaBlock(block) {
 function decodeGorillaToChar(gorillaStr) {
   const blocks = gorillaStr.split(",");
   let code = 0;
-  // 下位→上位なので上位は左シフト
   for (let i = blocks.length - 1; i >= 0; i--) {
     code <<= 7;
     code += decodeGorillaBlock(blocks[i]);
   }
-  return String.fromCharCode(code);
+  return String.fromCodePoint(code);
 }
 
-// 入力された日本語をゴリラ語に変換（連結はカンマで区切る）
 function convert() {
   const input = document.getElementById("input").value.trim();
   const output = [];
@@ -79,7 +74,6 @@ function convert() {
   document.getElementById("output").innerText = output.join(" ");
 }
 
-// ゴリラ語（カンマ区切りの塊がスペース区切りで複数）を日本語に戻す
 function convertBack() {
   const input = document.getElementById("input").value.trim();
   const parts = input.split(/\s+/);
@@ -87,7 +81,6 @@ function convertBack() {
 
   for (const part of parts) {
     if (!part) continue;
-    // 空白はそのまま
     if (/^[\s\r\n]+$/.test(part)) {
       output.push(part);
       continue;
@@ -101,3 +94,62 @@ function convertBack() {
 
   document.getElementById("output").innerText = output.join("");
 }
+
+// ---------- 背景ニコニコ風ゴリラ流し ----------
+
+const bg = document.querySelector('.background');
+
+function createRandomGorilla() {
+  const g = document.createElement('div');
+  g.className = 'gorilla';
+  g.textContent = '🦍';
+
+  const size = 20 + Math.random() * 40; // 20~60px
+  g.style.fontSize = size + 'px';
+
+  const startX = window.innerWidth + 100;
+  const startY = Math.random() * window.innerHeight;
+
+  g.style.left = startX + 'px';
+  g.style.top = startY + 'px';
+
+  g.style.opacity = (0.05 + Math.random() * 0.1).toFixed(2);
+
+  // 0.02 ~ 0.1 px/ms
+  const speedX = 0.02 + Math.random() * 0.08;
+  const speedY = speedX;
+
+  bg.appendChild(g);
+
+  let last = performance.now();
+
+  function animate(time) {
+    const dt = time - last;
+    last = time;
+
+    let currentX = parseFloat(g.style.left);
+    let currentY = parseFloat(g.style.top);
+
+    currentX -= speedX * dt;
+    currentY -= speedY * dt;
+
+    g.style.left = currentX + 'px';
+    g.style.top = currentY + 'px';
+
+    if (currentX < -100 || currentY < -100) {
+      g.remove();
+      return;
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  requestAnimationFrame(animate);
+
+  g.addEventListener('click', () => {
+    g.textContent = '💥';
+    setTimeout(() => g.remove(), 400);
+  });
+}
+
+setInterval(createRandomGorilla, 50);
