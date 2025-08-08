@@ -1,23 +1,24 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <title>ゴリラ語変換器</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ゴリラ語 ⇄ ひらがな変換サイト</title>
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="background">
-    <div class="gorilla-stream"></div>
-  </div>
 
-  <h1>ゴリラ語変換サイト</h1>
+<h1>ゴリラ語 ⇄ ひらがな変換サイト</h1>
 
-  <textarea id="input" placeholder="日本語を入力"></textarea><br />
-  <button onclick="convert()">ゴリラ語に変換</button>
-  <button onclick="convertBack()">日本語に戻す</button>
+<textarea id="input" rows="5" placeholder="ここに日本語かゴリラ語を入力"></textarea><br />
 
-  <div class="output" id="output"></div>
+<button onclick="convert()">日本語 → ゴリラ語</button>
+<button onclick="convertBack()">ゴリラ語 → 日本語</button>
 
-  <script src="script.js"></script>
+<div id="output" class="output"></div>
+
+<div class="background"></div>
+
+<script src="script.js"></script>
 </body>
 </html>
