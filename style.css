@@ -56,32 +56,21 @@ button:hover {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
 }
 
-/* 背景の🦍を斜めに無限に流す */
+/* 背景のゴリラ用 */
 .background {
   position: fixed;
-  top: -300px;
-  left: -300px;
-  width: 300vw;
-  height: 300vh;
-  font-size: 90px;
-  color: rgba(0, 0, 0, 0.06);
-  white-space: nowrap;
-  user-select: none;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
   pointer-events: none;
-  transform: rotate(-45deg);
+  overflow: hidden;
   z-index: -1;
-  animation: scrollGorilla 15s linear infinite;
+  user-select: none;
 }
-
-.background::before {
-  content: "🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 🦍 ";
-}
-
-@keyframes scrollGorilla {
-  0% {
-    transform: translateX(0) rotate(-45deg);
-  }
-  100% {
-    transform: translateX(-70%) rotate(-45deg);
-  }
+.gorilla {
+  position: absolute;
+  cursor: pointer;
+  user-select: none;
+  will-change: transform;
+  pointer-events: auto;
 }
