@@ -31,22 +31,21 @@ for (const key in numToChar) {
 
 function decimalToGorilla(num) {
   const bits = [64, 32, 16, 8, 4, 2, 1];
-  let result = [];
+  let result = "";
   for (const bit of bits) {
     if (num >= bit) {
-      result.push(Object.keys(gorillaToBit).find(k => gorillaToBit[k] === bit));
+      result += Object.keys(gorillaToBit).find(k => gorillaToBit[k] === bit);
       num -= bit;
     }
   }
-  return result.join(",");
+  return result;
 }
 
 function gorillaToDecimal(goriStr) {
-  const parts = goriStr.split(",");
   let sum = 0;
-  for (const part of parts) {
-    if (gorillaToBit[part]) {
-      sum += gorillaToBit[part];
+  for (const char of goriStr) {
+    if (gorillaToBit[char]) {
+      sum += gorillaToBit[char];
     }
   }
   return sum;
@@ -70,21 +69,17 @@ function convert() {
 
 function convertBack() {
   const input = document.getElementById("input").value.trim();
-  const tokens = input.split(",");
-  let temp = [];
+  // 入力をカンマで区切って1文字分ずつ処理
+  const parts = input.split(",");
   let result = "";
 
-  for (const token of tokens) {
-    temp.push(token);
-    const dec = gorillaToDecimal(temp.join(","));
+  for (const part of parts) {
+    const dec = gorillaToDecimal(part);
     if (numToChar[dec]) {
       result += numToChar[dec];
-      temp = [];
+    } else {
+      result += "[?]";
     }
-  }
-
-  if (temp.length > 0) {
-    result += "[?]";
   }
 
   document.getElementById("output").innerText = result;
