@@ -29,6 +29,7 @@ for (const key in numToChar) {
   charToNum[numToChar[key]] = parseInt(key);
 }
 
+// 数値 → ゴリラ語の文字列（複数文字の塊）
 function decimalToGorilla(num) {
   const bits = [64, 32, 16, 8, 4, 2, 1];
   let result = "";
@@ -41,6 +42,7 @@ function decimalToGorilla(num) {
   return result;
 }
 
+// ゴリラ語文字列 → 数値
 function gorillaToDecimal(goriStr) {
   let sum = 0;
   for (const char of goriStr) {
@@ -51,6 +53,7 @@ function gorillaToDecimal(goriStr) {
   return sum;
 }
 
+// ひらがな→ゴリラ語（カンマ区切りで1文字分ずつ塊）
 function convert() {
   const input = document.getElementById("input").value.trim();
   let output = [];
@@ -60,18 +63,16 @@ function convert() {
     if (!num) {
       output.push("[?]");
     } else {
-      // ひらがな1文字→ゴリラ語塊（文字列）
       output.push(decimalToGorilla(num));
     }
   }
 
-  // ひらがな1文字ごとのゴリラ語塊をカンマ区切りで繋ぐ
   document.getElementById("output").innerText = output.join(",");
 }
 
+// ゴリラ語（カンマ区切りの塊）→ひらがな
 function convertBack() {
   const input = document.getElementById("input").value.trim();
-  // 入力を「,」で区切って1文字分ずつ復号
   const parts = input.split(",");
   let result = "";
 
